@@ -4,14 +4,16 @@
 
 import xlrd
 import sqlite3
+from classes import *
 
 from xlrd import open_workbook
 
 ficheiro = open_workbook('cna131fresultados.xls')
 
 RawData = []
-Data = []
+FinalData = []
 Count = 0
+CountInsert = 0
 
 # Leitura do EXCEL
 
@@ -19,35 +21,17 @@ for s in ficheiro.sheets():
 	for row in range(s.nrows):
 		if Count > 2:
 			for col in range(s.ncols):	
-				RawData.append(unicode(str(s.cell(row,col)),'utf-8'))
-				
+				 
+				 if CountInsert > 8:
+					 FinalData.append(RawData)
+					 RawData = []
+					 CountInsert = 0
+				 		 
+				 RawData.append(s.cell_value(row,col))
+				 CountInsert += 1
+				 
 		Count+=1
 
-# Inserção de dados na base de dados
-
-FinalData = []
-DataTemp = []
-
-Count = 0
-
-for index in range(len(RawData)):
-	
-	temp = str(RawData[index]).split(':')
-	st = temp[1].replace("'",'') # retirar as pelicas
-	
-	if temp[0] == 'text':
-		st = st[1:] # retirar o 'u'
-		
-	if temp[0] == 'number':
-		st = float(st) # converter para float
-		
-	if Count > 8:
-		FinalData.append(DataTemp)
-		DataTemp = []
-		Count = 0
-		
-	DataTemp.append(st)	
-	Count+=1
 
 # Ligação a base de dados
 
@@ -65,11 +49,40 @@ for indx in range(len(FinalData) - 1):
 
 Connection.commit()
 
-## TESTE ##
+## Obter Estatisticas ##
+
 Command.execute('SELECT * FROM cna131')
-data = Command.fetchall()
+TempData = Command.fetchall()
 
-for tm in data:
-	print tm
+## Por Instituição :
 
-Connection.close()
+AlunosInstituicao = []
+TEMPInst = []
+Count = 0.0
+
+for tmp in TempData:
+	
+		Command.execute("SELECT COLOC from cna131 WHERE COD_INST='" + tmp[0] + "'")
+		Altemp = Command.fetchall()
+		
+		for indx in range(len(Altemp)):
+			Count += Altemp[indx][0]
+		
+		INST = Instituicao(tmp[0],Count)
+		
+		if not INST.ID in TEMPInst:
+			TEMPInst.append(INST.ID)
+			AlunosInstituicao.append(INST)
+			#print str(tmp[0]) + "->" + str(Count)
+			
+		Count = 0
+	
+print AlunosInstituicao
+
+
+
+
+
+
+
+
