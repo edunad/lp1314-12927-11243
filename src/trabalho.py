@@ -10,6 +10,7 @@ from xlrd import open_workbook
 
 ficheiro = open_workbook('cna131fresultados.xls')
 
+
 RawData = []
 FinalData = []
 Count = 0
@@ -56,12 +57,18 @@ Connection.commit()
 # Aluno por Inst
 #print get_inst('COLOC',Command)
 
-# Vagas
+# Vagas por Inst
 #print get_inst('VAGA_SOBR',Command)
 
 # Aluno por Distrito
-get_dist('COLOC',Command)
+#print get_dist('COLOC',Command)
 
+# Vagas por Distrito
+#print get_dist('VAGA_SOBR',Command)
 
+# Permilagem de Alunos por Distrito
+#print get_dist_per('COLOC',Command)
 
+# Percentagem de Alunos / Coloc
+#print get_total_perc(Command)
 

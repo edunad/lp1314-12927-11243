@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import xlrd
 import sqlite3
 from classes import *
+from xlrd import open_workbook
 
-def get_data(data, where, Command, offset):
+def get_data(data, where, Command, offset, filt):
 	
 	MySqlData = []
 	TEMPO = []
@@ -19,6 +21,9 @@ def get_data(data, where, Command, offset):
 		OffCmnd = tmp[offset].encode('utf-8')
 		Command.execute("SELECT " + data + " from cna131 WHERE " + where + "='" + OffCmnd + "'")
 		
+		if filt != '' :
+			OffCmnd = OffCmnd.split(filt)[0]
+		
 		if not OffCmnd in TEMPO:
 			MySqlData.append(Instituicao(OffCmnd,Command.fetchall()))
 			TEMPO.append(OffCmnd)
@@ -28,42 +33,64 @@ def get_data(data, where, Command, offset):
 #######
 def dist_data():
 	
-	District = []
-	District.append('Açores')
-	District.append('Algarve')
-	District.append('Aveiro')
-	District.append('Beira Interior')
-	District.append('Coimbra')
-	District.append('Évora')
-	District.append('Lisboa')
-	District.append('Minho')
-	District.append('Porto')
-	District.append('Trás-os-Montes e Alto Douro')
-	District.append('Madeira')
-	District.append('Beja')
-	District.append('Cávado e do Ave')
-	District.append('Bragança')
-	District.append('Castelo Branco')
-	District.append('Guarda')
-	District.append('Leiria')
-	District.append('Portalegre')
-	District.append('Santarém')
-	District.append('Setúbal')
-	District.append('Viana do Castelo')
-	District.append('Viseu')
-	District.append('Tomar')
-	District.append('Estoril')
+	Districts = []
 	
-	return District
+	Districts.append(District('Açores'))
+	Districts.append(District('Algarve'))
+	Districts.append(District('Aveiro'))
+	Districts.append(District('Beira Interior'))
+	Districts.append(District('Coimbra'))
+	Districts.append(District('Évora'))
+	Districts.append(District('Lisboa'))
+	Districts.append(District('Minho'))
+	Districts.append(District('Porto'))
+	Districts.append(District('Trás-os-Montes e Alto Douro'))
+	Districts.append(District('Madeira'))
+	Districts.append(District('Beja'))
+	Districts.append(District('Cávado e do Ave'))
+	Districts.append(District('Bragança'))
+	Districts.append(District('Castelo Branco'))
+	Districts.append(District('Guarda'))
+	Districts.append(District('Leiria'))
+	Districts.append(District('Portalegre'))
+	Districts.append(District('Santarém'))
+	Districts.append(District('Setúbal'))
+	Districts.append(District('Viana do Castelo'))
+	Districts.append(District('Viseu'))
+	Districts.append(District('Tomar'))
+	Districts.append(District('Estoril'))
+	
+	Districts.append(District('Unknown'))
+	
+	return Districts
 #######
 
+def implementDistrict(data,DistData):
+	TEMPDATA = data
+	
+	for tmp in TEMPDATA:
+		
+		IN = isInList(tmp.ID,DistData)		
+		tmp.Dist = District(DistData[IN].ID,IN)
+	
+	return TEMPDATA
+
+def isInList(stri,data):
+	
+	for indx in range(len(data)) :
+		if stri.find(data[indx].ID) != -1:
+			return indx
+			
+	return indx
+		
+	
+#######
 def get_inst(data,Command):
 	
 	#0 = ID, 1 = List
-	Inst_Data = get_data(data,'COD_INST',Command,0)
+	Inst_Data = get_data(data,'COD_INST',Command,0,'')
 
 	ALUN_DIST = []
-	Count = 0.0
 	
 	for tmp in Inst_Data:
 		Count = 0
@@ -77,12 +104,43 @@ def get_inst(data,Command):
 
 def get_dist(data,Command):
 	
+	Districts = dist_data()
 	#0 = ID, 1 = List
-	Inst_Data = get_data(data,'NOME_INST',Command,2)
-	print Inst_Data	
-	return Inst_Data
+	Data = implementDistrict(get_data(data,'NOME_INST',Command,2,''),Districts)
+	
+	for temp in Data:
+		Count = 0
+		
+		for inst in temp.Data:
+			Count += inst[0]
+		
+		Indx = temp.Dist.INDEX
+		Districts[Indx].Count += Count
 	
 	
+	return Districts
+
+def get_dist_per(data,Command):
+	Dt = get_dist(data,Command)
+	
+	for tmp in Dt:
+		tmp.Count /= 1000
+
+	return Dt
+	
+def get_total_perc(Command):
+	Alunos = get_inst('COLOC',Command)
+	TOTAL = 0.0
+	
+	for tmp in Alunos:
+		TOTAL += tmp.Data
+		
+	for tmp in Alunos:
+		tmp.Data /= TOTAL
+		tmp.Data *= 100
+		tmp.Data = round(tmp.Data,4)
+	
+	return Alunos
 	
 	
 	
