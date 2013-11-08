@@ -5,7 +5,7 @@
 import xlrd
 import sqlite3
 from classes import *
-
+from functions import *
 from xlrd import open_workbook
 
 ficheiro = open_workbook('cna131fresultados.xls')
@@ -49,39 +49,18 @@ for indx in range(len(FinalData) - 1):
 
 Connection.commit()
 
+########################
 ## Obter Estatisticas ##
 
-Command.execute('SELECT * FROM cna131')
-TempData = Command.fetchall()
 
-## Por Instituição :
+# Aluno por Inst
+#print get_inst('COLOC',Command)
 
-AlunosInstituicao = []
-TEMPInst = []
-Count = 0.0
+# Vagas
+#print get_inst('VAGA_SOBR',Command)
 
-for tmp in TempData:
-	
-		Command.execute("SELECT COLOC from cna131 WHERE COD_INST='" + tmp[0] + "'")
-		Altemp = Command.fetchall()
-		
-		for indx in range(len(Altemp)):
-			Count += Altemp[indx][0]
-		
-		INST = Instituicao(tmp[0],Count)
-		
-		if not INST.ID in TEMPInst:
-			TEMPInst.append(INST.ID)
-			AlunosInstituicao.append(INST)
-			#print str(tmp[0]) + "->" + str(Count)
-			
-		Count = 0
-	
-print AlunosInstituicao
-
-
-
-
+# Aluno por Distrito
+get_dist('COLOC',Command)
 
 
 

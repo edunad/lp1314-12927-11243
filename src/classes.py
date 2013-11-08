@@ -1,11 +1,12 @@
+# -*- coding: utf-8 -*-
 
 class Instituicao(object):
-	def __init__(self, ID=None, Count=None):
+	def __init__(self, ID=None, Data=None):
 		self.ID = ID
-		self.Count = Count
+		self.Data = Data
 		
 	def __str__(self):
-		return self.ID
+		return str(self.ID) + "->" + str(self.Data)
 		
 	def __repr__(self):
-		return self.ID + " -> " + str(self.Count)
+		return str(self.ID) + "->" + str(self.Data)
