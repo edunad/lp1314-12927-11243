@@ -19,7 +19,7 @@ class Instituicao(object):
 		self.Dist = None
 		
 	def __str__(self):
-		return str(self.ID) + "->" + str(self.Data) + "->" + str(self.Dist) 
+		return str(self.ID) + "->" + str(self.Data) + "->" + str(self.Dist)
 		
 	def __repr__(self):
-		return str(self.ID) + "->" + str(self.Data) + "->" + str(self.Dist) 
+		return str(self.ID) + "->" + str(self.Data) + "->" + str(self.Dist)

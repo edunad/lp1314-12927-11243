@@ -2,28 +2,38 @@
 # autor: 12927 11243
 # data: 23 de Outubro de 2013
 
+import wx
 import xlrd
 import sqlite3
+
 from classes import *
 from functions import *
 from xlrd import open_workbook
+from mainmenu_design import *
+
+#############
+## STARTUP ##
+#############
 
 ficheiro = open_workbook('cna131fresultados.xls')
+District_Database = open_workbook('district-database.xls')
 
-
+District_Data = []
 RawData = []
 FinalData = []
 Count = 0
 CountInsert = 0
 
-# Leitura do EXCEL
+###################
+## EXCEL READING ##
+###################
 
 for s in ficheiro.sheets():
 	for row in range(s.nrows):
 		if Count > 2:
 			for col in range(s.ncols):	
 				 
-				 if CountInsert > 8:
+				 if CountInsert > (s.ncols - 1):
 					 FinalData.append(RawData)
 					 RawData = []
 					 CountInsert = 0
@@ -33,8 +43,9 @@ for s in ficheiro.sheets():
 				 
 		Count+=1
 
-
-# Ligação a base de dados
+##############
+## DATABASE ##
+##############
 
 Connection = sqlite3.connect('cna131fresultados.db')
 Command = Connection.cursor()
@@ -45,30 +56,18 @@ Command.execute('CREATE TABLE cna131 (COD_INST text, COD_CUR text, NOME_INST tex
 Connection.commit()
 
 for indx in range(len(FinalData) - 1):
-	#print 'Index = ', indx ,' -> ', FinalData[indx] 
 	Command.execute('INSERT INTO cna131 VALUES(?,?,?,?,?,?,?,?,?)',FinalData[indx])
 
 Connection.commit()
 
-########################
-## Obter Estatisticas ##
+###############
+## MAIN MENU ##
+###############
 
-
-# Aluno por Inst
-#print get_inst('COLOC',Command)
-
-# Vagas por Inst
-#print get_inst('VAGA_SOBR',Command)
-
-# Aluno por Distrito
-#print get_dist('COLOC',Command)
-
-# Vagas por Distrito
-#print get_dist('VAGA_SOBR',Command)
-
-# Permilagem de Alunos por Distrito
-#print get_dist_per('COLOC',Command)
-
-# Percentagem de Alunos / Coloc
-#print get_total_perc(Command)
+app = wx.PySimpleApp(0)
+wx.InitAllImageHandlers()
+MainMenu = Menu(None, -1, "")
+app.SetTopWindow(MainMenu)
+MainMenu.Show()
+app.MainLoop()
 

@@ -2,10 +2,16 @@
 
 import xlrd
 import sqlite3
+import matplotlib.pyplot as plt
+import numpy as np
+
 from classes import *
 from xlrd import open_workbook
 
-def get_data(data, where, Command, offset, filt):
+Connection = sqlite3.connect('cna131fresultados.db')
+Command = Connection.cursor()
+
+def get_data(data, where, offset, filt):
 	
 	MySqlData = []
 	TEMPO = []
@@ -31,38 +37,21 @@ def get_data(data, where, Command, offset, filt):
 	return MySqlData
 
 #######
-def dist_data():
 	
-	Districts = []
+
+def get_dist_data():
+	District_Data = []
+	District_Database = open_workbook('district-database.xls')
 	
-	Districts.append(District('Açores'))
-	Districts.append(District('Algarve'))
-	Districts.append(District('Aveiro'))
-	Districts.append(District('Beira Interior'))
-	Districts.append(District('Coimbra'))
-	Districts.append(District('Évora'))
-	Districts.append(District('Lisboa'))
-	Districts.append(District('Minho'))
-	Districts.append(District('Porto'))
-	Districts.append(District('Trás-os-Montes e Alto Douro'))
-	Districts.append(District('Madeira'))
-	Districts.append(District('Beja'))
-	Districts.append(District('Cávado e do Ave'))
-	Districts.append(District('Bragança'))
-	Districts.append(District('Castelo Branco'))
-	Districts.append(District('Guarda'))
-	Districts.append(District('Leiria'))
-	Districts.append(District('Portalegre'))
-	Districts.append(District('Santarém'))
-	Districts.append(District('Setúbal'))
-	Districts.append(District('Viana do Castelo'))
-	Districts.append(District('Viseu'))
-	Districts.append(District('Tomar'))
-	Districts.append(District('Estoril'))
-	
-	Districts.append(District('Unknown'))
-	
-	return Districts
+	for s in District_Database.sheets():
+		for row in range(s.nrows):
+			for col in range(s.ncols):	
+				District_Data.append(District(s.cell_value(row,col).encode('utf-8')))
+				
+				
+	District_Data.append(District('Unknown'))
+	return District_Data
+
 #######
 
 def implementDistrict(data,DistData):
@@ -85,10 +74,10 @@ def isInList(stri,data):
 		
 	
 #######
-def get_inst(data,Command):
+def get_inst(data):
 	
 	#0 = ID, 1 = List
-	Inst_Data = get_data(data,'COD_INST',Command,0,'')
+	Inst_Data = get_data(data,'COD_INST',0,'')
 
 	ALUN_DIST = []
 	
@@ -102,11 +91,11 @@ def get_inst(data,Command):
 			
 	return ALUN_DIST
 
-def get_dist(data,Command):
+def get_dist(data):
 	
-	Districts = dist_data()
+	Districts = get_dist_data()
 	#0 = ID, 1 = List
-	Data = implementDistrict(get_data(data,'NOME_INST',Command,2,''),Districts)
+	Data = implementDistrict(get_data(data,'NOME_INST',2,''),Districts)
 	
 	for temp in Data:
 		Count = 0
@@ -120,16 +109,16 @@ def get_dist(data,Command):
 	
 	return Districts
 
-def get_dist_per(data,Command):
-	Dt = get_dist(data,Command)
+def get_dist_per(data):
+	Dt = get_dist(data)
 	
 	for tmp in Dt:
 		tmp.Count /= 1000
 
 	return Dt
 	
-def get_total_perc(Command):
-	Alunos = get_inst('COLOC',Command)
+def get_total_perc():
+	Alunos = get_inst('COLOC')
 	TOTAL = 0.0
 	
 	for tmp in Alunos:
@@ -144,7 +133,54 @@ def get_total_perc(Command):
 	
 	
 	
+def create_graph_inst(data, title, y_title,x_title):
 	
+	Values = []
+	IDS = []
+	
+	fig = plt.figure()
+	ax = plt.subplot(111)
+	width = 20
+
+	for tmp in data:
+		Values.append(tmp.Data)
+		IDS.append(int(tmp.ID))
+		
+	Size = np.arange(len(IDS)) * width
+	ax.bar(Size, Values, width = width)
+	ax.set_xticks(Size + width/2)
+	ax.set_xticklabels(IDS, rotation=90)
+	ax.set_xlabel(x_title)
+	ax.set_ylabel(y_title)
+	ax.set_title(title)
+	
+	plt.grid(True)
+	plt.show()
+
+def create_graph_dist(data, title, y_title,x_title):
+	
+	Values = []
+	IDS = []
+	
+	fig = plt.figure()
+	ax = plt.subplot(111)
+	width = 20
+
+	for tmp in data:
+		Values.append(tmp.Count)
+		IDS.append(tmp.ID.decode('utf-8'))
+		
+	Size = np.arange(len(IDS)) * width
+	ax.bar(Size, Values, width = width)
+	
+	ax.set_xticks(Size + width/2)
+	ax.set_xticklabels(IDS, rotation=90)
+	ax.set_xlabel(x_title)
+	ax.set_ylabel(y_title)
+	ax.set_title(title)
+	
+	plt.grid(True)
+	plt.show()
 	
 	
 	
