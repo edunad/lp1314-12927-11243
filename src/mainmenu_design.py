@@ -26,17 +26,17 @@ class Menu(wx.Frame):
 		Value = self.combo1.GetValue()
 		
 		if Selected == 0 :
-			create_graph_inst(get_inst('COLOC'),'Grafico - ' + Value,'Alunos','ID')
+			create_graph(get_inst('COLOC'),'Grafico - ' + Value,'Alunos','ID',False)
 		elif Selected == 1 :
-			create_graph_dist(get_dist('COLOC'),'Grafico - ' + Value,'Alunos','Distritos')
+			create_graph(get_dist('COLOC'),'Grafico - ' + Value,'Alunos','Distritos',True)
 		elif Selected == 2 :
-			create_graph_dist(get_dist_per('COLOC'),'Grafico - ' + Value,'Alunos (Permilagem)','Distritos')
+			create_graph(get_dist_per('COLOC'),'Grafico - ' + Value,'Alunos (Permilagem)','Distritos',True)
 		elif Selected == 3 :
-			create_graph_inst(get_total_perc(),'Grafico - ' + Value,'Alunos (%)','ID')
+			create_graph(get_total_perc(),'Grafico - ' + Value,'Alunos (%)','ID',False)
 		elif Selected == 4 :
-			create_graph_inst(get_inst('VAGA_SOBR'),'Grafico - ' + Value,'Vagas','ID')
+			create_graph(get_inst('VAGA_SOBR'),'Grafico - ' + Value,'Vagas','ID',False)
 		else :
-			create_graph_dist(get_dist('VAGA_SOBR'),'Grafico - ' + Value,'Vagas','ID')
+			create_graph(get_dist('VAGA_SOBR'),'Grafico - ' + Value,'Vagas','ID',True)
 			
 	def __set_properties(self):	
 		self.SetTitle("Main Menu")

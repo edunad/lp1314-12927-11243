@@ -133,7 +133,7 @@ def get_total_perc():
 	
 	
 	
-def create_graph_inst(data, title, y_title,x_title):
+def create_graph(data, title, y_title,x_title,isDist):
 	
 	Values = []
 	IDS = []
@@ -143,8 +143,12 @@ def create_graph_inst(data, title, y_title,x_title):
 	width = 20
 
 	for tmp in data:
-		Values.append(tmp.Data)
-		IDS.append(int(tmp.ID))
+		if isDist :
+			Values.append(tmp.Count)
+			IDS.append(tmp.ID.decode('utf-8'))
+		else:
+			Values.append(tmp.Data)
+			IDS.append(int(tmp.ID))
 		
 	Size = np.arange(len(IDS)) * width
 	ax.bar(Size, Values, width = width)
@@ -156,35 +160,6 @@ def create_graph_inst(data, title, y_title,x_title):
 	
 	plt.grid(True)
 	plt.show()
-
-def create_graph_dist(data, title, y_title,x_title):
-	
-	Values = []
-	IDS = []
-	
-	fig = plt.figure()
-	ax = plt.subplot(111)
-	width = 20
-
-	for tmp in data:
-		Values.append(tmp.Count)
-		IDS.append(tmp.ID.decode('utf-8'))
-		
-	Size = np.arange(len(IDS)) * width
-	ax.bar(Size, Values, width = width)
-	
-	ax.set_xticks(Size + width/2)
-	ax.set_xticklabels(IDS, rotation=90)
-	ax.set_xlabel(x_title)
-	ax.set_ylabel(y_title)
-	ax.set_title(title)
-	
-	plt.grid(True)
-	plt.show()
-	
-	
-	
-	
 	
 	
 	
