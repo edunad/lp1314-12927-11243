@@ -60,6 +60,12 @@ for indx in range(len(FinalData) - 1):
 
 Connection.commit()
 
+#####################
+## Save Statistics ##
+#####################
+
+save_statistics()
+	
 ###############
 ## MAIN MENU ##
 ###############

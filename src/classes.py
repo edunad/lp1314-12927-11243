@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# autor: 12927 11243
+# data: 23 de Outubro de 2013
 
 class District(object):
 	def __init__(self, ID=None, INDEX=0):
@@ -19,7 +21,7 @@ class Instituicao(object):
 		self.Dist = None
 		
 	def __str__(self):
-		return str(self.ID) + "->" + str(self.Data) + "->" + str(self.Dist)
+		return str(self.ID) + "->" + str(self.Data)
 		
 	def __repr__(self):
-		return str(self.ID) + "->" + str(self.Data) + "->" + str(self.Dist)
+		return str(self.ID) + "->" + str(self.Data)

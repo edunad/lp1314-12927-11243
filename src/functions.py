@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+# autor: 12927 11243
+# data: 23 de Outubro de 2013
 
 import xlrd
 import sqlite3
 import matplotlib.pyplot as plt
 import numpy as np
+import csv
 
 from classes import *
 from xlrd import open_workbook
@@ -11,6 +14,7 @@ from xlrd import open_workbook
 Connection = sqlite3.connect('cna131fresultados.db')
 Command = Connection.cursor()
 
+# Get data from the database
 def get_data(data, where, offset, filt):
 	
 	MySqlData = []
@@ -38,7 +42,7 @@ def get_data(data, where, offset, filt):
 
 #######
 	
-
+# Read the XLS file containing districts
 def get_dist_data():
 	District_Data = []
 	District_Database = open_workbook('district-database.xls')
@@ -54,6 +58,7 @@ def get_dist_data():
 
 #######
 
+# Set the districts to the insts
 def implementDistrict(data,DistData):
 	TEMPDATA = data
 	
@@ -64,6 +69,7 @@ def implementDistrict(data,DistData):
 	
 	return TEMPDATA
 
+# Check if its in the list. If its not, return the last value on the "data" (AKA Unkown)
 def isInList(stri,data):
 	
 	for indx in range(len(data)) :
@@ -74,6 +80,7 @@ def isInList(stri,data):
 		
 	
 #######
+# Get the Institution
 def get_inst(data):
 	
 	#0 = ID, 1 = List
@@ -91,6 +98,7 @@ def get_inst(data):
 			
 	return ALUN_DIST
 
+# Get the District
 def get_dist(data):
 	
 	Districts = get_dist_data()
@@ -109,6 +117,7 @@ def get_dist(data):
 	
 	return Districts
 
+# Permilagem on dist
 def get_dist_per(data):
 	Dt = get_dist(data)
 	
@@ -117,6 +126,7 @@ def get_dist_per(data):
 
 	return Dt
 	
+# Percent on Inst
 def get_total_perc():
 	Alunos = get_inst('COLOC')
 	TOTAL = 0.0
@@ -131,8 +141,7 @@ def get_total_perc():
 	
 	return Alunos
 	
-	
-	
+# Create the graphics
 def create_graph(data, title, y_title,x_title,isDist):
 	
 	Values = []
@@ -161,5 +170,43 @@ def create_graph(data, title, y_title,x_title,isDist):
 	plt.grid(True)
 	plt.show()
 	
-	
+def save_statistics():
+	with open('statistics.csv','wb')as csvfile:
+		writer = csv.writer(csvfile)
+		
+		# 1º Estatistica
+		writer.writerow("==== Alunos Por Instituição ====")
+		
+		for t in get_inst('COLOC'):
+			writer.writerow(str(t))
+			
+		# 2º Estatistica
+		writer.writerow("==== Alunos Por Distrito ====")
+		
+		for t in get_dist('COLOC'):
+			writer.writerow(str(t))
+			
+		# 3º Estatistica
+		writer.writerow("==== Permilagem Alunos por Distrito ====")
+		
+		for t in get_dist_per('COLOC'):
+			writer.writerow(str(t))
+			
+		# 4º Estatistica
+		writer.writerow("==== Percentagem Alunos por Instituiçao ====")
+		
+		for t in get_total_perc():
+			writer.writerow(str(t))
+			
+		# 5º Estatistica
+		writer.writerow("==== Vagas por Colocar por Instituição ====")
+		
+		for t in get_inst('VAGA_SOBR'):
+			writer.writerow(str(t))
+			
+		# 6º Estatistica
+		writer.writerow("==== Vagas por Colocar por Distrito ====")
+		
+		for t in get_dist('VAGA_SOBR'):
+			writer.writerow(str(t))
 	
