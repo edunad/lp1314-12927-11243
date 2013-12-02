@@ -7,7 +7,22 @@ from functions import *
 
 class Menu(wx.Frame):
 	
+	"""
+	#####################
+	#The Main Menu Class#
+	#####################
+	## Creates a GUI 
+	## Param : -wx.Frame = Frame to attach the mainmenu to
+	###################################################### 
+	"""
+
+
 	def __init__(self, *args, **kwds):
+		
+		"""
+		Starts up the menu (setup)
+		"""
+		
 		kwds["style"] = wx.DEFAULT_FRAME_STYLE
 		wx.Frame.__init__(self, *args, **kwds)
 		
@@ -22,6 +37,9 @@ class Menu(wx.Frame):
         # end wxGlade
         
 	def button1Click(self, event):
+		
+		""" On button click, do this """
+		
 		Selected = self.combo1.GetSelection()
 		Value = self.combo1.GetValue()
 		
@@ -39,10 +57,20 @@ class Menu(wx.Frame):
 			create_graph(get_dist('VAGA_SOBR'),'Grafico - ' + Value,'Vagas','ID',True)
 			
 	def __set_properties(self):	
+	
+		"""
+		Set the Properties
+		"""
+		
 		self.SetTitle("Main Menu")
 		self.combo1.SetSelection(0)
 
 	def __do_layout(self):
+		
+		"""
+		Set the Layout
+		"""
+		
 		Sizer = wx.BoxSizer(wx.HORIZONTAL)
 		Sizer.Add(self.combo1, 0, 0, 0)
 		Sizer.Add(self.button1, 0, 0, 0)

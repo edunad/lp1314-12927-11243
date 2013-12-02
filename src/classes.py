@@ -3,6 +3,15 @@
 # data: 23 de Outubro de 2013
 
 class District(object):
+	
+	"""
+	######################
+	# The District Class #
+	######################
+	## Stores the districts 
+	###################################################### 
+	"""
+	
 	def __init__(self, ID=None, INDEX=0):
 		self.ID = ID
 		self.Count = 0.0
@@ -15,6 +24,15 @@ class District(object):
 		return str(self.ID) + "->" + str(self.Count)
 		
 class Instituicao(object):
+	
+	"""
+	######################
+	# The Instituicao Class #
+	######################
+	## Stores the Instituicao
+	###################################################### 
+	"""
+	
 	def __init__(self, ID=None, Data=None):
 		self.ID = ID
 		self.Data = Data

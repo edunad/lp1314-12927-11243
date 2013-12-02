@@ -11,9 +11,12 @@ from functions import *
 from xlrd import open_workbook
 from mainmenu_design import *
 
+"""
 #############
 ## STARTUP ##
-#############
+############################################################################
+## Setups the files and variables. It also opens the Excel files to be used.
+"""
 
 ficheiro = open_workbook('cna131fresultados.xls')
 District_Database = open_workbook('district-database.xls')
@@ -24,9 +27,12 @@ FinalData = []
 Count = 0
 CountInsert = 0
 
+"""
 ###################
 ## EXCEL READING ##
-###################
+#############################################################
+## Reads the Excel and prepares it to be saved on a database.
+"""
 
 for s in ficheiro.sheets():
 	for row in range(s.nrows):
@@ -42,11 +48,12 @@ for s in ficheiro.sheets():
 				 CountInsert += 1
 				 
 		Count+=1
-
+"""
 ##############
 ## DATABASE ##
-##############
-
+############################################################
+## Creates and connects to the database for saving the data.
+"""
 Connection = sqlite3.connect('cna131fresultados.db')
 Command = Connection.cursor()
 
@@ -60,15 +67,21 @@ for indx in range(len(FinalData) - 1):
 
 Connection.commit()
 
+"""
 #####################
 ## Save Statistics ##
-#####################
+###############################################
+## Saves the statistics on a excel format file.
+"""
 
 save_statistics()
-	
+
+"""	
 ###############
 ## MAIN MENU ##
-###############
+##############################
+## Starts up the MainMenu GUI.
+"""
 
 app = wx.PySimpleApp(0)
 wx.InitAllImageHandlers()
