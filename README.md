@@ -1,2 +1,5 @@
 School project
-  A bunch of graphs
+
+A bunch of graphs
+
+Made by me and @dramein
